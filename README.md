@@ -1,6 +1,8 @@
 # ai-agent
 
-这是一个 TypeScript monorepo 项目，包含两个 Next.js 前端应用、一个基于 Hono 的 Cloudflare Workers API、共享 UI 组件、共享 RPC 契约，以及统一的 lint/type 配置。
+这是一个正在建设中的 TypeScript monorepo 项目，包含两个 Next.js 前端应用、一个基于 Hono 的 Cloudflare Workers API、共享 UI 组件、共享 RPC 契约，以及统一的 lint/type 配置。
+
+当前仓库主要完成了项目基础架构、共享组件体系、环境变量校验、API 契约和 typed RPC 调用链路。后续会在这个基础上继续补充真实业务页面、后台管理能力和后端业务接口。
 
 ## 架构
 
@@ -32,13 +34,29 @@ apps/web 或 apps/admin
 
 ## 应用和包
 
-- `apps/web`：用户侧 Next.js 应用，展示共享 UI，并调用 `POST /rpc/system/ping`。
-- `apps/admin`：管理后台 Next.js 应用，使用同样的环境变量校验方式。
-- `apps/api`：Hono API 应用，导出 `AppType` 给 typed RPC client 使用，并通过 Wrangler 部署。
+- `apps/web`：用户侧 Next.js 主应用，当前已接入基础页面、共享 UI 和 `POST /rpc/system/ping` 调用链路。
+- `apps/admin`：管理后台 Next.js 应用，当前已接入共享 UI 和环境变量校验，后续承载后台管理功能。
+- `apps/api`：Hono API 应用，当前已提供基础路由、统一响应结构和 `AppType` 导出，后续扩展业务接口。
 - `packages/contracts`：共享 `ApiResponse`、`BizCode`、`PingRequestSchema` 等契约类型。
 - `packages/ui`：共享 Tailwind CSS 主题和 `Button`、`Card`、`Input`、`Label`、`Separator`、`TailwindDemo` 等组件。
 - `packages/eslint-config`：供各应用和包复用的 ESLint 配置。
 - `packages/typescript-config`：供各应用和包复用的 TypeScript 配置。
+
+## 当前状态
+
+- 已完成 monorepo workspace、Turbo 任务、共享依赖 catalog。
+- 已完成 web/admin 两个前端应用的基础 Next.js 配置。
+- 已完成 api 应用的 Hono/Wrangler 基础配置。
+- 已完成 `@repo/contracts` 里的统一响应结构、业务错误码和 ping 契约。
+- 已完成 `@repo/ui` 的基础主题和组件接入。
+- 已完成 web 到 api 的 typed RPC 链路验证。
+
+## 后续方向
+
+- 补充用户侧真实业务页面和交互流程。
+- 补充管理后台的业务模块、表单、列表和权限相关能力。
+- 扩展 API 的业务路由、数据访问层和错误处理策略。
+- 持续沉淀共享 UI 组件、contracts 和工程规范。
 
 ## 环境要求
 

@@ -1,14 +1,23 @@
 # web
 
-用户侧 Next.js 应用，本地默认运行在 `http://localhost:3005`。
+用户侧 Next.js 主应用，本地默认运行在 `http://localhost:3005`。当前还处于项目建设阶段，已经接入基础页面、共享 UI、环境变量校验和 typed RPC 调用链路，后续会继续补充真实业务页面和交互。
 
 ## 职责
 
-- 展示用户侧首页和设计提示 UI。
+- 承载用户侧主应用页面和后续业务交互。
+- 当前已完成基础首页和设计提示 UI。
 - 引入 `@repo/ui` 的共享组件和 Tailwind 主题。
 - 使用 `hono/client` 和 `@repo/api` 导出的 `AppType` 调用 typed RPC。
 - 使用 `@repo/contracts` 里的请求类型、响应类型和业务错误码。
 - 分离读取服务端环境变量和浏览器公开环境变量。
+
+## 当前状态
+
+- 已完成用户侧基础页面结构。
+- 已完成共享 UI 组件和主题接入。
+- 已完成 `POST /rpc/system/ping` typed RPC 调用。
+- 已完成服务端和客户端环境变量校验。
+- 后续继续扩展真实业务页面、数据展示和用户操作流程。
 
 ## 请求链路
 
@@ -69,7 +78,7 @@ pnpm build
 
 ## 关键文件
 
-- `app/page.tsx`：首页 UI、RPC 调用和响应展示。
+- `app/page.tsx`：当前首页 UI、RPC 调用和响应展示，后续会继续拆分和承载业务模块。
 - `src/env.server.ts`：服务端环境变量校验。
 - `src/env.client.ts`：浏览器公开环境变量校验。
 - `src/web-env-badge.tsx`：客户端环境变量展示组件。
