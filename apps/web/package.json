@@ -4,30 +4,32 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3005",
+    "dev": "next dev --port 3005",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0",
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "workspace:*",
     "@repo/api": "workspace:*",
     "@repo/contracts": "workspace:*",
+    "@repo/ui": "workspace:*",
     "hono": "^4.12.14",
-    "next": "16.2.4",
+    "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "^19.2.5"
+    "react-dom": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "eslint": "^9.39.1",
-    "typescript": "5.9.2",
+    "@tailwindcss/postcss": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "catalog:",
     "tailwindcss": "catalog:",
-    "@tailwindcss/postcss": "catalog:"
+    "typescript": "catalog:"
   }
 }

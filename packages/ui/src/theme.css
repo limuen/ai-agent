@@ -1,69 +1,55 @@
 @source "./**/*.{ts,tsx}";
 
 @theme {
-  /* Brand */
-  --color-brand-50: #f3f7ff;
-  --color-brand-100: #dce8ff;
-  --color-brand-200: #b8d0ff;
-  --color-brand-300: #8eb8ff;
-  --color-brand-400: #6d9fff;
-  --color-brand-500: #4f7cff;
-  --color-brand-600: #315ee8;
-  --color-brand-700: #2749bb;
-  --color-brand-800: #1a317a;
-  --color-brand-900: #111f4a;
+  /* Background & Foreground */
+  --color-background: #FAFAFA;
+  --color-foreground: #0f0f0f;
 
-  /* Surface */
-  --color-surface-canvas: #0a0f1e;
-  --color-surface-panel: #111827;
-  --color-surface-elevated: #172033;
-  --color-surface-overlay: rgba(10, 15, 30, 0.88);
+  /* Card */
+  --color-card: #ffffff;
+  --color-card-foreground: #0f0f0f;
 
-  /* Content */
-  --color-content-primary: #f8fafc;
-  --color-content-secondary: #cbd5e1;
-  --color-content-tertiary: #94a3b8;
-  --color-content-disabled: #64748b;
-  --color-content-inverse: #0f172a;
+  /* Primary */
+  --color-primary: #171717;
+  --color-primary-foreground: #FAFAFA;
 
-  /* Border */
-  --color-border-default: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.14);
-  --color-border-focus: rgba(79, 124, 255, 0.48);
-  --color-border-error: rgba(239, 68, 68, 0.45);
+  /* Secondary */
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #171717;
 
-  /* Feedback */
-  --color-state-success: #22c55e;
-  --color-state-success-subtle: rgba(34, 197, 94, 0.14);
-  --color-state-warning: #f59e0b;
-  --color-state-warning-subtle: rgba(245, 158, 11, 0.14);
-  --color-state-error: #ef4444;
-  --color-state-error-subtle: rgba(239, 68, 68, 0.14);
-  --color-state-info: #38bdf8;
-  --color-state-info-subtle: rgba(56, 189, 248, 0.14);
+  /* Muted */
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+
+  /* Accent */
+  --color-accent: #f5f5f5;
+  --color-accent-foreground: #171717;
+
+  /* Border & Input */
+  --color-border: #e5e5e5;
+  --color-input: #e5e5e5;
+  --color-ring: #a3a3a3;
+
+  /* Destructive */
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #FAFAFA;
+
+  /* Sidebar colors */
+  --color-sidebar-background: #FAFAFA;
+  --color-sidebar-foreground: #404040;
+  --color-sidebar-primary: #171717;
+  --color-sidebar-primary-foreground: #FAFAFA;
+  --color-sidebar-accent: #f0f0f0;
+  --color-sidebar-accent-foreground: #171717;
+  --color-sidebar-border: #e8e8e8;
+  --color-sidebar-ring: #a3a3a3;
+
+  /* Shadows — subtle black transparency for depth */
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.04);
+  --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.03);
 
   /* Radius */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-
-  /* Shadow */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-sm: 0 6px 16px rgba(0, 0, 0, 0.24);
-  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.32);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.42);
-  --shadow-glow: 0 0 24px rgba(79, 124, 255, 0.18);
-
-  /* Typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
+  --radius-control: 0.625rem;
+  --radius-surface: 1rem;
+  --radius-card: 1.25rem;
 }
