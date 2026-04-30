@@ -1,159 +1,151 @@
-# Turborepo starter
+# ai-agent
 
-This Turborepo starter is maintained by the Turborepo core team.
+这是一个 TypeScript monorepo 项目，包含两个 Next.js 前端应用、一个基于 Hono 的 Cloudflare Workers API、共享 UI 组件、共享 RPC 契约，以及统一的 lint/type 配置。
 
-## Using this example
+## 架构
 
-Run the following command:
-
-```sh
-npx create-turbo@latest
+```text
+ai-agent
+├── apps
+│   ├── web      面向用户侧的 Next.js 应用，本地端口 3005
+│   ├── admin    管理后台 Next.js 应用，本地端口 3006
+│   └── api      基于 Hono 的 Cloudflare Workers API，本地 Wrangler 端口 8787
+├── packages
+│   ├── contracts            共享 zod schema、API 响应结构、业务错误码
+│   ├── ui                   共享 Tailwind 主题和 React UI 基础组件
+│   ├── eslint-config        共享 ESLint 配置
+│   └── typescript-config    共享 TypeScript 配置
+├── pnpm-workspace.yaml      workspace 包声明和依赖 catalog
+└── turbo.json               Turbo 任务图和环境变量透传配置
 ```
 
-## What's inside?
+核心请求链路：
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```text
+apps/web 或 apps/admin
+  -> Hono typed client / 环境变量 API_BASE_URL
+  -> apps/api Hono route
+  -> packages/contracts schema 和响应结构
 ```
 
-Without global `turbo`, use your package manager:
+`packages/contracts` 是请求校验和响应结构的单一来源。前端从这里引入请求/响应类型和业务错误码，`apps/api` 也从这里引入同一套 zod schema 来校验接口入参。
+
+## 应用和包
+
+- `apps/web`：用户侧 Next.js 应用，展示共享 UI，并调用 `POST /rpc/system/ping`。
+- `apps/admin`：管理后台 Next.js 应用，使用同样的环境变量校验方式。
+- `apps/api`：Hono API 应用，导出 `AppType` 给 typed RPC client 使用，并通过 Wrangler 部署。
+- `packages/contracts`：共享 `ApiResponse`、`BizCode`、`PingRequestSchema` 等契约类型。
+- `packages/ui`：共享 Tailwind CSS 主题和 `Button`、`Card`、`Input`、`Label`、`Separator`、`TailwindDemo` 等组件。
+- `packages/eslint-config`：供各应用和包复用的 ESLint 配置。
+- `packages/typescript-config`：供各应用和包复用的 TypeScript 配置。
+
+## 环境要求
+
+- Node.js `>=18`
+- pnpm `10.33.2`
+
+在仓库根目录安装依赖：
 
 ```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+pnpm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 环境变量
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+本地默认 API 地址是 `http://127.0.0.1:8787`。
+
+前端环境变量：
+
+```env
+APP_ENV=development
+API_BASE_URL=http://127.0.0.1:8787
+NEXT_PUBLIC_APP_ENV=development
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8787
+```
+
+API 环境变量：
+
+```env
+APP_ENV=development
+```
+
+可以从示例文件复制一份本地配置：
 
 ```sh
-turbo build --filter=docs
+cp apps/web/.env.example apps/web/.env.development
+cp apps/admin/.env.example apps/admin/.env.development
+cp apps/api/.dev.vars.example apps/api/.dev.vars
 ```
 
-Without global `turbo`:
+## 本地开发
+
+分别启动各服务：
 
 ```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+pnpm dev:api
+pnpm dev:web
+pnpm dev:admin
 ```
 
-### Develop
+默认本地地址：
 
-To develop all apps and packages, run the following command:
+- Web：`http://localhost:3005`
+- Admin：`http://localhost:3006`
+- API：`http://127.0.0.1:8787`
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+通过 Turbo 启动全部 dev 任务：
 
 ```sh
-cd my-turborepo
-turbo dev
+pnpm dev
 ```
 
-Without global `turbo`, use your package manager:
+## 校验
+
+提交或推送前建议跑这组检查：
 
 ```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+pnpm install
+pnpm --filter @repo/ui check-types
+pnpm --filter web check-types
+pnpm --filter admin check-types
+pnpm lint
+pnpm build
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+常用根目录脚本：
 
 ```sh
-turbo dev --filter=web
+pnpm check-types
+pnpm lint
+pnpm build
+pnpm format
 ```
 
-Without global `turbo`:
+## 构建
+
+通过 Turbo 构建所有应用和包：
 
 ```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+pnpm build
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+构建或启动指定环境的前端目标：
 
 ```sh
-cd my-turborepo
-turbo login
+pnpm build:web:test
+pnpm start:web:test
+pnpm build:admin:test
+pnpm start:admin:test
 ```
 
-Without global `turbo`, use your package manager:
+## 部署说明
+
+`apps/api` 使用 Wrangler 配置部署：
 
 ```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
+pnpm --filter @repo/api deploy:test
+pnpm --filter @repo/api deploy:production
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+前端的生产和测试 API 地址需要通过对应的 `.env.production`、`.env.test` 或平台环境变量配置。
