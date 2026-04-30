@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# admin
 
-## Getting Started
+管理后台 Next.js 应用，本地默认运行在 `http://localhost:3006`。
 
-First, run the development server:
+## 职责
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 验证管理后台可以消费 `@repo/ui` 的共享组件。
+- 展示服务端环境变量和浏览器公开环境变量。
+- 验证每个前端应用都能独立编译 Tailwind，同时扫描共享 UI 包里的 class。
+- 作为第二个前端应用，保证 monorepo 内共享主题和基础组件能跨应用复用。
+
+## 环境变量
+
+本地默认配置：
+
+```env
+APP_ENV=development
+API_BASE_URL=http://127.0.0.1:8787
+NEXT_PUBLIC_APP_ENV=development
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8787
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+可以从示例文件复制：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+cp apps/admin/.env.example apps/admin/.env.development
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+## 常用命令
 
-## Learn More
+在仓库根目录执行：
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+pnpm dev:admin
+pnpm --filter admin check-types
+pnpm --filter admin lint
+pnpm --filter admin build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+也可以进入 `apps/admin` 后执行：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sh
+pnpm dev
+pnpm check-types
+pnpm lint
+pnpm build
+```
 
-## Deploy on Vercel
+测试环境相关命令：
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```sh
+pnpm --filter admin dev:test
+pnpm --filter admin build:test
+pnpm --filter admin start:test
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 关键文件
+
+- `app/page.tsx`：管理后台页面和共享 UI 验证区。
+- `src/env.server.ts`：服务端环境变量校验。
+- `src/env.client.ts`：浏览器公开环境变量校验。
+- `src/admin-env-badge.tsx`：客户端环境变量展示组件。
+- `app/globals.css`：Tailwind 和共享 UI theme 入口。

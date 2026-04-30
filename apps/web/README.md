@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# web
 
-## Getting Started
+用户侧 Next.js 应用，本地默认运行在 `http://localhost:3005`。
 
-First, run the development server:
+## 职责
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 展示用户侧首页和设计提示 UI。
+- 引入 `@repo/ui` 的共享组件和 Tailwind 主题。
+- 使用 `hono/client` 和 `@repo/api` 导出的 `AppType` 调用 typed RPC。
+- 使用 `@repo/contracts` 里的请求类型、响应类型和业务错误码。
+- 分离读取服务端环境变量和浏览器公开环境变量。
+
+## 请求链路
+
+当前首页会调用：
+
+```text
+POST /rpc/system/ping
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+调用链路：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+apps/web/app/page.tsx
+  -> getWebServerEnv()
+  -> hc<AppType>(API_BASE_URL)
+  -> apps/api /rpc/system/ping
+  -> packages/contracts PingRequestSchema
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+如果 API 请求失败，页面会使用 `BizCode.SYSTEM_UPSTREAM_TIMEOUT` 渲染兜底错误响应。
 
-## Learn More
+## 环境变量
 
-To learn more about Next.js, take a look at the following resources:
+本地默认配置：
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+APP_ENV=development
+API_BASE_URL=http://127.0.0.1:8787
+NEXT_PUBLIC_APP_ENV=development
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8787
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+可以从示例文件复制：
 
-## Deploy on Vercel
+```sh
+cp apps/web/.env.example apps/web/.env.development
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 常用命令
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+在仓库根目录执行：
+
+```sh
+pnpm dev:web
+pnpm --filter web check-types
+pnpm --filter web lint
+pnpm --filter web build
+```
+
+也可以进入 `apps/web` 后执行：
+
+```sh
+pnpm dev
+pnpm check-types
+pnpm lint
+pnpm build
+```
+
+## 关键文件
+
+- `app/page.tsx`：首页 UI、RPC 调用和响应展示。
+- `src/env.server.ts`：服务端环境变量校验。
+- `src/env.client.ts`：浏览器公开环境变量校验。
+- `src/web-env-badge.tsx`：客户端环境变量展示组件。
+- `app/globals.css`：Tailwind 和共享 UI theme 入口。
