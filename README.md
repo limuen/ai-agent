@@ -2,7 +2,7 @@
 
 这是一个正在建设中的 TypeScript monorepo 项目，包含两个 Next.js 前端应用、一个基于 Hono 的 Cloudflare Workers API、共享 UI 组件、类型共享与 RPC 调用，以及通用的 lint/type 配置。
 
-当前仓库主要完成了项目基础架构、共享组件体系、环境变量校验、API 基础结构，以及前后端之间的类型共享与 RPC 调用。后续会在这个基础上继续补充真实业务页面、后台管理能力和后端业务接口。
+当前仓库主要完成了项目基础架构、共享组件体系、环境变量校验、API 路由拆分，以及前后端之间的类型共享与 RPC 调用。现在已经包含 system、catalog、user、order 等示例接口和对应的 Web 验证页面，后续会在这个基础上继续补充真实业务页面、后台管理能力和后端业务接口。
 
 ## 架构
 
@@ -26,18 +26,18 @@ ai-agent
 ```text
 apps/web 或 apps/admin
   -> Hono client / 环境变量 API_BASE_URL
-  -> apps/api Hono route
+  -> apps/api Hono routes
   -> packages/contracts schema 和响应结构
 ```
 
-`packages/contracts` 负责类型共享，放公共的请求/响应类型、zod schema 和业务错误码。前端通过 Hono client 调用 API，接口入参和响应类型复用这里的定义；`apps/api` 也从这里引入同一套 schema 来校验接口入参。
+`packages/contracts` 负责类型共享，放公共的请求/响应类型、zod schema 和业务错误码。前端通过 Hono client 调用 API，接口入参和响应类型复用这里的定义；`apps/api` 也从这里引入同一套 schema 来校验接口入参，并通过统一的成功/失败响应结构返回数据。
 
 ## 应用和包
 
-- `apps/web`：用户侧 Next.js 主应用，当前已接入基础页面、共享 UI 和 `POST /rpc/system/ping` RPC 调用。
+- `apps/web`：用户侧 Next.js 主应用，当前已接入基础页面、共享 UI、Hono client，以及 system/catalog/user/order 的接口验证页面。
 - `apps/admin`：管理后台 Next.js 应用，当前已接入共享 UI 和环境变量校验，后续承载后台管理功能。
-- `apps/api`：Hono API 应用，当前已提供基础路由、统一响应结构和 `AppType` 导出，后续扩展业务接口。
-- `packages/contracts`：负责类型共享，提供 `ApiResponse`、`BizCode`、`PingRequestSchema` 等定义。
+- `apps/api`：Hono API 应用，当前已提供分模块路由、统一响应结构、请求校验和 `AppType` 导出，后续扩展业务接口。
+- `packages/contracts`：负责类型共享，提供 `ApiResponse`、`BizCode`、system/catalog/user/order 等接口 schema 和类型定义。
 - `packages/ui`：共享 Tailwind CSS 主题和 `Button`、`Card`、`Input`、`Label`、`Separator`、`TailwindDemo` 等组件。
 - `packages/eslint-config`：供各应用和包复用的 ESLint 配置。
 - `packages/typescript-config`：供各应用和包复用的 TypeScript 配置。
@@ -46,10 +46,33 @@ apps/web 或 apps/admin
 
 - 已完成 monorepo workspace、Turbo 任务、共享依赖 catalog。
 - 已完成 web/admin 两个前端应用的基础 Next.js 配置。
-- 已完成 api 应用的 Hono/Wrangler 基础配置。
-- 已完成 `@repo/contracts` 里的统一响应结构、业务错误码和 ping 类型定义。
+- 已完成 api 应用的 Hono/Wrangler 基础配置和分模块路由组织。
+- 已完成 `@repo/contracts` 里的统一响应结构、业务错误码，以及 system/catalog/user/order 的类型定义。
 - 已完成 `@repo/ui` 的基础主题和组件接入。
 - 已跑通 web 到 api 的 RPC 调用，并复用了同一套请求/响应类型。
+- 已提供 Web 侧接口验证页面，用于快速确认前后端类型、请求和响应是否一致。
+
+## API 示例
+
+当前 API 暴露以下示例接口：
+
+```text
+GET  /health
+POST /rpc/system/ping
+GET  /rpc/catalog/list
+GET  /rpc/user/profile
+POST /rpc/order/detail
+```
+
+对应的 Web 验证页面：
+
+```text
+/verify/system/health
+/verify/system/ping
+/verify/catalog/list
+/verify/user/profile
+/verify/order/detail
+```
 
 ## 后续方向
 
