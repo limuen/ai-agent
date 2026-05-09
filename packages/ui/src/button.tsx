@@ -14,10 +14,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         outline:
           "border border-border bg-background text-foreground hover:bg-muted hover:border-muted-foreground/30",
-        ghost:
-          "text-foreground hover:bg-muted",
-        muted:
-          "bg-muted text-muted-foreground hover:bg-muted/80",
+        ghost: "text-foreground hover:bg-muted",
+        muted: "bg-muted text-muted-foreground hover:bg-muted/80",
         inverse:
           "bg-foreground text-background hover:bg-foreground/90 shadow-soft active:scale-[0.98]",
       },
@@ -40,7 +38,13 @@ type ButtonProps = React.ComponentProps<"button"> &
     asChild?: boolean;
   };
 
-function Button({ className, variant, size, asChild = false, ...props }: ButtonProps) {
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: ButtonProps) {
   const Comp = asChild ? Slot : "button";
 
   return (

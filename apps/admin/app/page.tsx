@@ -33,8 +33,8 @@ export default function Home() {
             One shared UI package, two frontends, one Tailwind pipeline per app.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-            The admin app scans the shared package source so Tailwind classes used
-            there render correctly here too.
+            The admin app scans the shared package source so Tailwind classes
+            used there render correctly here too.
           </p>
         </div>
       </section>
@@ -43,7 +43,8 @@ export default function Home() {
         <CardHeader>
           <CardTitle>Environment overview</CardTitle>
           <CardDescription>
-            The admin app reads private server variables and public browser variables separately.
+            The admin app reads private server variables and public browser
+            variables separately.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -52,13 +53,17 @@ export default function Home() {
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                 APP_ENV
               </p>
-              <p className="mt-2 text-sm font-medium text-foreground">{env.APP_ENV}</p>
+              <p className="mt-2 text-sm font-medium text-foreground">
+                {env.APP_ENV}
+              </p>
             </div>
             <div className="rounded-[var(--radius-surface)] border border-border bg-background px-4 py-3 shadow-soft">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                 API_BASE_URL
               </p>
-              <p className="mt-2 break-all text-sm font-medium text-foreground">{env.API_BASE_URL}</p>
+              <p className="mt-2 break-all text-sm font-medium text-foreground">
+                {env.API_BASE_URL}
+              </p>
             </div>
           </div>
           <AdminEnvBadge />

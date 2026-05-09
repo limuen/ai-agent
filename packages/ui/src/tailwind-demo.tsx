@@ -75,8 +75,8 @@ export function TailwindDemo({ appName }: TailwindDemoProps) {
 
         <div className="rounded-[var(--radius-surface)] border border-border bg-muted p-4 text-sm leading-6 text-muted-foreground shadow-soft">
           <p>
-            The same primitives can be imported from the shared package and reused
-            in both sub-apps without adding separate component copies.
+            The same primitives can be imported from the shared package and
+            reused in both sub-apps without adding separate component copies.
           </p>
         </div>
       </CardContent>
