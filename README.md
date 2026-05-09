@@ -2,7 +2,7 @@
 
 这是一个正在建设中的 TypeScript monorepo 项目，包含两个 Next.js 前端应用、一个基于 Hono 的 Cloudflare Workers API、共享 UI 组件、类型共享与 RPC 调用，以及通用的 lint/type 配置。
 
-当前仓库主要完成了项目基础架构、共享组件体系、环境变量校验、API 路由拆分，以及前后端之间的类型共享与 RPC 调用。现在已经包含 system、catalog、user、order 等示例接口和对应的 Web 验证页面，后续会在这个基础上继续补充真实业务页面、后台管理能力和后端业务接口。
+当前仓库主要完成了项目基础架构、共享组件体系、环境变量校验、API 路由拆分，以及前后端之间的类型共享与 RPC 调用。现在已经包含 system、catalog、user、order 等示例接口、共享 HTTP 请求模块和对应的 Web 验证页面，后续会在这个基础上继续补充真实业务页面、后台管理能力和后端业务接口。
 
 ## 架构
 
@@ -25,16 +25,16 @@ ai-agent
 
 ```text
 apps/web 或 apps/admin
-  -> Hono client / 环境变量 API_BASE_URL
+  -> 共享 HTTP 模块 / 环境变量 API_BASE_URL 或 NEXT_PUBLIC_API_BASE_URL
   -> apps/api Hono routes
   -> packages/contracts schema 和响应结构
 ```
 
-`packages/contracts` 负责类型共享，放公共的请求/响应类型、zod schema 和业务错误码。前端通过 Hono client 调用 API，接口入参和响应类型复用这里的定义；`apps/api` 也从这里引入同一套 schema 来校验接口入参，并通过统一的成功/失败响应结构返回数据。
+`packages/contracts` 负责类型共享，放公共的请求/响应类型、zod schema 和业务错误码。前端通过 `apps/web/src/http` 里的共享 HTTP 模块调用 API，接口入参和响应类型复用这里的定义；`apps/api` 也从这里引入同一套 schema 来校验接口入参，并通过统一的成功/失败响应结构返回数据。
 
 ## 应用和包
 
-- `apps/web`：用户侧 Next.js 主应用，当前已接入基础页面、共享 UI、Hono client，以及 system/catalog/user/order 的接口验证页面。
+- `apps/web`：用户侧 Next.js 主应用，当前已接入基础页面、共享 UI、共享 HTTP 模块，以及 system/catalog/user/order 的服务端和客户端接口验证页面。
 - `apps/admin`：管理后台 Next.js 应用，当前已接入共享 UI 和环境变量校验，后续承载后台管理功能。
 - `apps/api`：Hono API 应用，当前已提供分模块路由、统一响应结构、请求校验和 `AppType` 导出，后续扩展业务接口。
 - `packages/contracts`：负责类型共享，提供 `ApiResponse`、`BizCode`、system/catalog/user/order 等接口 schema 和类型定义。
@@ -50,7 +50,8 @@ apps/web 或 apps/admin
 - 已完成 `@repo/contracts` 里的统一响应结构、业务错误码，以及 system/catalog/user/order 的类型定义。
 - 已完成 `@repo/ui` 的基础主题和组件接入。
 - 已跑通 web 到 api 的 RPC 调用，并复用了同一套请求/响应类型。
-- 已提供 Web 侧接口验证页面，用于快速确认前后端类型、请求和响应是否一致。
+- 已新增 `apps/web/src/http` 作为统一请求入口，会根据运行环境自动选择服务端 `API_BASE_URL` 或浏览器端 `NEXT_PUBLIC_API_BASE_URL`。
+- 已提供 Web 侧服务端和客户端接口验证页面，用于快速确认前后端类型、请求和响应是否一致。
 
 ## API 示例
 
@@ -72,6 +73,7 @@ POST /rpc/order/detail
 /verify/catalog/list
 /verify/user/profile
 /verify/order/detail
+/verify/client/system/ping
 ```
 
 ## 后续方向
